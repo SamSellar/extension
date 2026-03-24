@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 Extension Investigation Station</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #e0f4ff;
+    --blue: #3a9fe8;
+    --blue-dark: #1e7dc4;
+    --green: #34c77b;
+    --green-dark: #1fa85e;
+    --yellow: #ffd23f;
+    --yellow-dark: #e0a800;
+    --orange: #ff8c42;
+    --orange-dark: #d96a1a;
+    --purple: #a066e0;
+    --purple-dark: #7a45b5;
+    --pink: #f06292;
+    --pink-dark: #c2185b;
+    --teal: #26c6da;
+    --teal-dark: #0097a7;
+    --red: #ef5350;
+    --red-dark: #c62828;
+    --white: #ffffff;
+    --bg: #f0f8ff;
+    --card-bg: #ffffff;
+    --text: #1a2e40;
+    --text-muted: #5a7a92;
+    --shadow: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-hover: 0 8px 28px rgba(0,0,0,0.16);
+    --radius: 18px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* === HEADER === */
+  .header {
+    background: linear-gradient(135deg, #1e7dc4 0%, #3a9fe8 50%, #26c6da 100%);
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(30,125,196,0.35);
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 50%;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -30px;
+    width: 220px; height: 220px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .header-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    position: relative;
+    z-index: 1;
+  }
+  .header-sub {
+    color: rgba(255,255,255,0.9);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .adult-btn {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.5);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: all 0.2s;
+    z-index: 10;
+  }
+  .adult-btn:hover { background: rgba(255,255,255,0.35); }
+
+  /* === TTS BAR === */
+  .tts-bar {
+    background: white;
+    border-bottom: 2px solid #e0ecf5;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .tts-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tts-btn {
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .tts-btn:hover { background: var(--blue-dark); }
+  .tts-btn.stop { background: var(--red); }
+  .tts-btn.stop:hover { background: var(--red-dark); }
+  .speed-group {
+    display: flex;
+    gap: 4px;
+  }
+  .speed-btn {
+    background: #e8f4fd;
+    border: 2px solid #b8d9f0;
+    border-radius: 8px;
+    padding: 3px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--blue-dark);
+    transition: all 0.2s;
+  }
+  .speed-btn.active, .speed-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+
+  /* === MAIN CONTENT === */
+  .main { max-width: 960px; margin: 0 auto; padding: 28px 16px 0; }
+
+  /* === SECTION HEADERS === */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0 16px;
+    padding: 0 4px;
+  }
+  .section-emoji {
+    font-size: 2rem;
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 14px;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+  .section-line {
+    flex: 1;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  /* Section colours */
+  .sec-english .section-emoji { background: #fff0f5; }
+  .sec-english .section-line { background: linear-gradient(90deg, var(--pink), transparent); }
+  .sec-english .section-title { color: var(--pink-dark); }
+
+  .sec-maths .section-emoji { background: #fff8e0; }
+  .sec-maths .section-line { background: linear-gradient(90deg, var(--yellow-dark), transparent); }
+  .sec-maths .section-title { color: var(--yellow-dark); }
+
+  .sec-science .section-emoji { background: #e8fff4; }
+  .sec-science .section-line { background: linear-gradient(90deg, var(--green), transparent); }
+  .sec-science .section-title { color: var(--green-dark); }
+
+  .sec-hass .section-emoji { background: #fff4e8; }
+  .sec-hass .section-line { background: linear-gradient(90deg, var(--orange), transparent); }
+  .sec-hass .section-title { color: var(--orange-dark); }
+
+  .sec-arts .section-emoji { background: #f5eeff; }
+  .sec-arts .section-line { background: linear-gradient(90deg, var(--purple), transparent); }
+  .sec-arts .section-title { color: var(--purple-dark); }
+
+  .sec-digital .section-emoji { background: #e0f8ff; }
+  .sec-digital .section-line { background: linear-gradient(90deg, var(--teal), transparent); }
+  .sec-digital .section-title { color: var(--teal-dark); }
+
+  .sec-mega .section-emoji { background: #fff8e0; }
+  .sec-mega .section-line { background: linear-gradient(90deg, var(--yellow), transparent); }
+  .sec-mega .section-title { color: #b07d00; }
+
+  /* === CARDS GRID === */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  /* === INVESTIGATION CARD === */
+  .inv-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .inv-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
+  }
+  .inv-card.open { border-color: var(--accent, #3a9fe8); }
+
+  .card-top {
+    padding: 16px 16px 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .card-emoji-wrap {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .card-info { flex: 1; }
+  .card-tag {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 6px;
+    padding: 2px 7px;
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+  .card-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding: 0 16px 12px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .card-tap {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: var(--blue);
+    border-top: 1.5px solid #e8f4fd;
+    transition: background 0.15s;
+  }
+  .card-tap:hover { background: #f0f8ff; }
+  .tap-arrow {
+    transition: transform 0.3s;
+    font-size: 1rem;
+  }
+  .inv-card.open .tap-arrow { transform: rotate(180deg); }
+
+  /* === STEPS PANEL === */
+  .steps-panel {
+    display: none;
+    padding: 16px;
+    background: #f7fbff;
+    border-top: 1.5px solid #d6ecfa;
+  }
+  .inv-card.open .steps-panel { display: block; }
+  .steps-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .steps-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--text);
+  }
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    color: white;
+  }
+  .steps-panel .download-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .steps-panel .download-btn:hover { background: var(--blue-dark); }
+
+  /* Section-specific accent colours */
+  .sec-english { --accent: var(--pink); --step-color: var(--pink); --tag-bg: #ffe0ed; --tag-color: #c2185b; --emoji-bg: #fff0f5; }
+  .sec-maths { --accent: var(--yellow-dark); --step-color: var(--yellow-dark); --tag-bg: #fff0b3; --tag-color: #8a6000; --emoji-bg: #fff8e0; }
+  .sec-science { --accent: var(--green); --step-color: var(--green-dark); --tag-bg: #c8f7e0; --tag-color: #1a7a45; --emoji-bg: #e8fff4; }
+  .sec-hass { --accent: var(--orange); --step-color: var(--orange-dark); --tag-bg: #ffe4cc; --tag-color: #a04800; --emoji-bg: #fff4e8; }
+  .sec-arts { --accent: var(--purple); --step-color: var(--purple-dark); --tag-bg: #ead6ff; --tag-color: #5a2d91; --emoji-bg: #f5eeff; }
+  .sec-digital { --accent: var(--teal); --step-color: var(--teal-dark); --tag-bg: #c0f4fc; --tag-color: #006778; --emoji-bg: #e0f8ff; }
+  .sec-mega { --accent: var(--yellow); --step-color: #b07d00; --tag-bg: #fff0b3; --tag-color: #8a6000; --emoji-bg: #fffbe0; }
+
+  /* === PIN MODAL === */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,30,55,0.55);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 24px;
+    padding: 32px 28px 28px;
+    width: min(90vw, 380px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    text-align: center;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none;
+    font-size: 1.4rem; cursor: pointer;
+    color: var(--text-muted);
+  }
+  .modal-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .modal-sub { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 20px; }
+  .pin-display {
+    font-size: 2.2rem;
+    letter-spacing: 12px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f0f8ff;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 2px solid #b8d9f0;
+    color: var(--blue-dark);
+    font-weight: 800;
+  }
+  .pin-error { color: var(--red); font-size: 0.85rem; font-weight: 700; min-height: 20px; margin-bottom: 8px; }
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .numpad-btn {
+    background: #f0f8ff;
+    border: 2px solid #d0e8f8;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .numpad-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+  .numpad-btn.del { color: var(--red); }
+  .numpad-btn.del:hover { background: var(--red); color: white; border-color: var(--red); }
+
+  /* === TEACHER PANEL === */
+  .teacher-panel {
+    display: none;
+    position: fixed; inset: 0;
+    background: #f0f8ff;
+    z-index: 200;
+    overflow-y: auto;
+    padding: 28px 20px 40px;
+  }
+  .teacher-panel.open { display: block; }
+  .teacher-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    max-width: 800px;
+    margin-left: auto; margin-right: auto;
+  }
+  .teacher-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--text);
+  }
+  .panel-close-btn {
+    background: none; border: none;
+    font-size: 1.5rem; cursor: pointer;
+    color: var(--text-muted);
+    padding: 4px;
+  }
+  .teacher-section {
+    max-width: 800px;
+    margin: 0 auto 28px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    box-shadow: var(--shadow);
+  }
+  .teacher-section h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.15rem;
+    margin-bottom: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .inv-select-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .inv-select-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 2px solid #e0ecf5;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+  .inv-select-item:hover { background: #f0f8ff; }
+  .inv-select-item.selected { border-color: var(--blue); background: #e8f4fd; }
+  .inv-select-item input[type=checkbox] { accent-color: var(--blue); width: 18px; height: 18px; }
+  .select-count { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
+  .save-btn {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .save-btn:hover { background: var(--green-dark); }
+  .saved-msg { color: var(--green-dark); font-size: 0.85rem; font-weight: 700; margin-top: 8px; display: none; }
+  .curr-links p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .notes-list { display: flex; flex-direction: column; gap: 10px; }
+  .note-item label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .note-item textarea {
+    width: 100%;
+    border: 2px solid #d0e8f8;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    resize: vertical;
+    min-height: 56px;
+    color: var(--text);
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .note-item textarea:focus { border-color: var(--blue); }
+
+  /* Hidden investigation */
+  .inv-card.hidden-inv { display: none; }
+  .section-wrapper.all-hidden { display: none; }
+
+  @media (max-width: 480px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .header-title { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <button class="adult-btn" onclick="openPin()">🔒 Adult Settings</button>
+  <div class="header-title">🌟 Extension Investigation Station</div>
+  <div class="header-sub">Pick something that excites you, tap to see your steps, and create something amazing!</div>
+</div>
+
+<!-- TTS BAR -->
+<div class="tts-bar">
+  <span class="tts-label">🔊 Read aloud:</span>
+  <button class="tts-btn" onclick="ttsReadAll()">▶ Read everything</button>
+  <button class="tts-btn stop" onclick="ttsStop()">⏹ Stop</button>
+  <div class="speed-group">
+    <button class="speed-btn" id="spd-slow" onclick="setSpeed(0.7, 'slow')">Slow</button>
+    <button class="speed-btn active" id="spd-normal" onclick="setSpeed(1, 'normal')">Normal</button>
+    <button class="speed-btn" id="spd-fast" onclick="setSpeed(1.4, 'fast')">Fast</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main-content">
+
+  <!-- ===== ENGLISH ===== -->
+  <div class="section-wrapper sec-english" id="sec-english">
+    <div class="section-header">
+      <div class="section-emoji" style="background:var(--emoji-bg)">✍️</div>
+      <div class="section-title">English</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <div class="inv-card sec-english" data-id="eng1">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">📖</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Reading</span>
+            <div class="card-title">Book Review Expert</div>
+          </div>
+        </div>
+        <div class="card-desc">Read a book and write a brilliant review. Tell others why they should — or shouldn't — read it!</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a book you have read recently.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Write 2–3 sentences about what happens in the story (no spoilers!).</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Write your favourite part and explain why you liked it.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Write one thing you would change or improve.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Give the book a star rating out of 5 and draw your rating.</li>
+            <li><span class="step-num" style="background:var(--step-color)">6</span>Share your review with a classmate — do they agree?</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Book Review Expert', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-english" data-id="eng2">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🦸</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Creative Writing</span>
+            <div class="card-title">Invent a New Hero</div>
+          </div>
+        </div>
+        <div class="card-desc">Create a brand new story hero — their name, power, weakness, and the problem they must solve.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a name and draw a quick sketch of your hero.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Decide their special power and one weakness.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Write a problem they need to solve in 1–2 sentences.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Write a short story (at least one paragraph) showing them solving it.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Add a title and an illustration for your story.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Invent a New Hero', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-english" data-id="eng3">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">📰</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Informative</span>
+            <div class="card-title">Class Newspaper Reporter</div>
+          </div>
+        </div>
+        <div class="card-desc">Write a newspaper article about something happening in your school or local community.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose an event or topic to report on.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Write a catchy headline.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Answer: Who? What? When? Where? Why?</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Write 2–3 paragraphs like a real reporter.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Add a photo or drawing with a caption underneath.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Class Newspaper Reporter', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MATHS ===== -->
+  <div class="section-wrapper sec-maths" id="sec-maths">
+    <div class="section-header">
+      <div class="section-emoji" style="background:var(--emoji-bg)">🔢</div>
+      <div class="section-title">Mathematics</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <div class="inv-card sec-maths" data-id="mth1">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">📊</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Data & Statistics</span>
+            <div class="card-title">Survey the Class</div>
+          </div>
+        </div>
+        <div class="card-desc">Collect data from your class, tally the results, and create a graph to show what you found.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a question to ask (e.g. "What is your favourite fruit?")</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Make a tally chart and survey at least 10 classmates.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Count up the totals for each answer.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Draw a bar graph or picture graph of the results.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write 2 sentences about what your data shows.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Survey the Class', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-maths" data-id="mth2">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🃏</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Number</span>
+            <div class="card-title">Design a Maths Card Game</div>
+          </div>
+        </div>
+        <div class="card-desc">Create a card game that uses adding or subtracting. Teach a friend how to play it!</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Decide on the maths skill the game will practise.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Draw and label at least 10 cards.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Write the rules — how do you win?</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Test the game with a partner.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Improve the rules if it was too easy or too hard.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Design a Maths Card Game', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-maths" data-id="mth3">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🏪</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Money & Measurement</span>
+            <div class="card-title">Run Your Own Mini Shop</div>
+          </div>
+        </div>
+        <div class="card-desc">Set up a pretend shop, price your items, and practise giving change using Australian money.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose 6–8 items to "sell" and give each a price under $2.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Make a price list or menu for your shop.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Write 5 problems: "I give you $2. You buy X. How much change?"</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Solve all 5 problems and show your working out.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Ask a classmate to be your customer and give them real change!</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Run Your Own Mini Shop', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SCIENCE ===== -->
+  <div class="section-wrapper sec-science" id="sec-science">
+    <div class="section-header">
+      <div class="section-emoji" style="background:var(--emoji-bg)">🔬</div>
+      <div class="section-title">Science</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <div class="inv-card sec-science" data-id="sci1">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🌱</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Living Things</span>
+            <div class="card-title">Plant Life Cycle Poster</div>
+          </div>
+        </div>
+        <div class="card-desc">Research and create a poster showing the complete life cycle of a plant of your choice.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a plant (e.g. sunflower, apple tree, bean).</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Find out the 4–5 stages of its life cycle.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Draw each stage with a label and one fact.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Arrange the stages in a circle with arrows.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Add a title and a "Did you know?" fact box.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Plant Life Cycle Poster', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-science" data-id="sci2">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🧪</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Investigation</span>
+            <div class="card-title">Design Your Own Experiment</div>
+          </div>
+        </div>
+        <div class="card-desc">Ask a scientific question, predict what will happen, test it, and record what you find out.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Write a question that starts with "What happens when…"</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Write your prediction: "I think… because…"</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>List the materials you need. Check with your teacher.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Do the experiment and write down what you observe.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write a conclusion: "I found out that…"</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Design Your Own Experiment', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-science" data-id="sci3">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🌏</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Earth & Space</span>
+            <div class="card-title">Amazing Earth Facts Book</div>
+          </div>
+        </div>
+        <div class="card-desc">Create a mini book of fascinating facts about our planet — weather, rocks, oceans and more!</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Fold 2–3 sheets of paper to make a mini book.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Choose 5 topics (e.g. volcanoes, the ocean, weather).</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Write 2–3 amazing facts and draw a picture for each topic.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Create a cover page with a title and your name.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Share your favourite fact with the class.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Amazing Earth Facts Book', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== HASS ===== -->
+  <div class="section-wrapper sec-hass" id="sec-hass">
+    <div class="section-header">
+      <div class="section-emoji" style="background:var(--emoji-bg)">🌍</div>
+      <div class="section-title">Humanities & Social Sciences</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <div class="inv-card sec-hass" data-id="hss1">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🗺️</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Geography</span>
+            <div class="card-title">Map My Community</div>
+          </div>
+        </div>
+        <div class="card-desc">Draw a detailed map of your local area and label the important places people use every day.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Think of places in your community (school, park, shops, library).</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Draw a bird's-eye view map — look from above!</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Add labels and a compass rose (N, S, E, W).</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Create a key/legend for your symbols.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write 2 sentences: why is this community important to people?</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Map My Community', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-hass" data-id="hss2">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🏛️</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">History</span>
+            <div class="card-title">A Story from the Past</div>
+          </div>
+        </div>
+        <div class="card-desc">Investigate how life was different for children in Australia 100 years ago. What changed?</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Think about: school, food, toys, transport, homes.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Find 3 differences between then and now.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Create a "Then vs Now" comparison chart.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Draw one scene from life 100 years ago.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write which change you think was the most important and why.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('A Story from the Past', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-hass" data-id="hss3">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🧑‍🤝‍🧑</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Civics</span>
+            <div class="card-title">How Our School Makes Decisions</div>
+          </div>
+        </div>
+        <div class="card-desc">Investigate how decisions are made at your school — who has a say and how rules are created.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>List 3 rules at your school and where you think they came from.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Think about: who decides — students, teachers, principal, parents?</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Draw a diagram showing who is involved in making school rules.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Design a new school rule you think would make school better.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write a short speech to persuade others that your rule is a good idea.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('How Our School Makes Decisions', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== ARTS ===== -->
+  <div class="section-wrapper sec-arts" id="sec-arts">
+    <div class="section-header">
+      <div class="section-emoji" style="background:var(--emoji-bg)">🎨</div>
+      <div class="section-title">The Arts</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <div class="inv-card sec-arts" data-id="art1">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🎭</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Drama</span>
+            <div class="card-title">Write & Perform a Mini Play</div>
+          </div>
+        </div>
+        <div class="card-desc">Write a short play script with at least 2 characters, then perform it with a partner.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a setting and a simple problem or conflict.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Name your 2+ characters and decide their personalities.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Write a script: Character Name: "what they say"</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Add stage directions in brackets, e.g. [laughing].</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Practise with a partner and perform it to the class!</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Write & Perform a Mini Play', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-arts" data-id="art2">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🖼️</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Visual Art</span>
+            <div class="card-title">Inspired by a Famous Artist</div>
+          </div>
+        </div>
+        <div class="card-desc">Learn about a famous artist, then create your own artwork inspired by their style.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a famous artist (e.g. Van Gogh, Monet, Aboriginal artists).</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Find out 3 facts about them and write them down.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Look at 2–3 of their artworks. What do you notice?</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Create your own artwork using their style or technique.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write an artist statement: what did you try and what worked?</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Inspired by a Famous Artist', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-arts" data-id="art3">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🎵</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Music</span>
+            <div class="card-title">Compose a Rhythm Pattern</div>
+          </div>
+        </div>
+        <div class="card-desc">Create your own rhythm pattern using claps, taps, and body percussion — then teach it to someone!</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose 3 sounds: clap, stomp, pat knees, or click fingers.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Create a pattern of 8 beats using your 3 sounds.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Write it down using symbols or words (e.g. CLAP-CLAP-stomp).</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Practise until you can do it without looking.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Teach your pattern to a classmate. Can they learn it?</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Compose a Rhythm Pattern', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== DIGITAL TECHNOLOGIES ===== -->
+  <div class="section-wrapper sec-digital" id="sec-digital">
+    <div class="section-header">
+      <div class="section-emoji" style="background:var(--emoji-bg)">💻</div>
+      <div class="section-title">Digital Technologies</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <div class="inv-card sec-digital" data-id="dig1">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🤖</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Algorithms</span>
+            <div class="card-title">Write Instructions for a Robot</div>
+          </div>
+        </div>
+        <div class="card-desc">Write step-by-step instructions so precise that a "robot" (your friend) can follow them exactly.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a simple task: make a sandwich, draw a shape, or tidy a desk.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Write every single step — be as precise as possible.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Give your instructions to a partner without telling them the task.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Watch what happens — did they figure it out?</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Fix any steps that were confusing and try again.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Write Instructions for a Robot', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-digital" data-id="dig2">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🎮</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Design Thinking</span>
+            <div class="card-title">Design a New App or Game</div>
+          </div>
+        </div>
+        <div class="card-desc">If you could invent an app or a game, what would it do? Plan it, sketch it, and explain it.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Decide: what problem does your app/game solve or what is it for?</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Sketch what the screen would look like.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Label the buttons and explain what each one does.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Write a short advertisement: why should someone download it?</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Share your idea — would your classmates use it?</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Design a New App or Game', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-digital" data-id="dig3">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🔐</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Online Safety</span>
+            <div class="card-title">Be a Digital Safety Expert</div>
+          </div>
+        </div>
+        <div class="card-desc">Learn the rules for staying safe online and create a poster to teach younger students.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Think of 5 important rules for staying safe online.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Write each rule in simple language a 5-year-old could understand.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Draw a picture for each rule.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Arrange them into a bright, eye-catching poster.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Present your poster and explain why each rule matters.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Be a Digital Safety Expert', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== MEGA ===== -->
+  <div class="section-wrapper sec-mega" id="sec-mega">
+    <div class="section-header">
+      <div class="section-emoji" style="background:var(--emoji-bg)">🌟</div>
+      <div class="section-title">Cross-Curriculum Mega Challenges</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <div class="inv-card sec-mega" data-id="meg1">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🌍✍️</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">HASS + English</span>
+            <div class="card-title">Postcards from a Real Place</div>
+          </div>
+        </div>
+        <div class="card-desc">Research a real country and write 3 postcards as if you are visiting — using real facts about the place!</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose a country you find interesting.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Research: What do people eat? What do they do? What is the land like?</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Make 3 postcard templates (fold paper in half).</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Write a message on each one using real facts — write as if you're there!</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Draw the scene on the front of each card.</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Postcards from a Real Place', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-mega" data-id="meg2">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🔢🔬</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">Maths + Science</span>
+            <div class="card-title">Measure the Natural World</div>
+          </div>
+        </div>
+        <div class="card-desc">Go outside! Measure and record natural objects then analyse your data like a real scientist.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Go outside and find 10 leaves, sticks, or rocks.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Measure each one in centimetres and record in a table.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Find the shortest, longest, and work out the difference.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Create a graph of your measurements.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write 3 observations: "I noticed that…"</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('Measure the Natural World', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+      <div class="inv-card sec-mega" data-id="meg3">
+        <div class="card-top">
+          <div class="card-emoji-wrap" style="background:var(--emoji-bg)">🌟</div>
+          <div class="card-info">
+            <span class="card-tag" style="background:var(--tag-bg);color:var(--tag-color)">All Subjects!</span>
+            <div class="card-title">My Expert Presentation</div>
+          </div>
+        </div>
+        <div class="card-desc">Choose the one thing you know MOST about — any topic — and become the class expert on it.</div>
+        <div class="card-tap">👆 Tap to see your steps <span class="tap-arrow">▾</span></div>
+        <div class="steps-panel">
+          <div class="steps-title">Your Steps 🪜</div>
+          <ul class="steps-list">
+            <li><span class="step-num" style="background:var(--step-color)">1</span>Choose your topic — something you already love and know about.</li>
+            <li><span class="step-num" style="background:var(--step-color)">2</span>Write down 5 facts even your teacher might not know.</li>
+            <li><span class="step-num" style="background:var(--step-color)">3</span>Create a poster, booklet, or display to share your knowledge.</li>
+            <li><span class="step-num" style="background:var(--step-color)">4</span>Prepare to present it in 2–3 minutes.</li>
+            <li><span class="step-num" style="background:var(--step-color)">5</span>Write 3 questions to quiz the class on your topic!</li>
+          </ul>
+          <button class="download-btn" onclick="downloadSummary('My Expert Presentation', this)">📄 Download Project Summary</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ========== PIN MODAL ========== -->
+<div class="modal-overlay" id="pin-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closePin()">✕</button>
+    <div class="modal-title">🔒 Adult Access</div>
+    <div class="modal-sub">Enter your PIN to access teacher settings</div>
+    <div class="pin-display" id="pin-display">••••</div>
+    <div class="pin-error" id="pin-error"></div>
+    <div class="numpad">
+      <button class="numpad-btn" onclick="pinPress('1')">1</button>
+      <button class="numpad-btn" onclick="pinPress('2')">2</button>
+      <button class="numpad-btn" onclick="pinPress('3')">3</button>
+      <button class="numpad-btn" onclick="pinPress('4')">4</button>
+      <button class="numpad-btn" onclick="pinPress('5')">5</button>
+      <button class="numpad-btn" onclick="pinPress('6')">6</button>
+      <button class="numpad-btn" onclick="pinPress('7')">7</button>
+      <button class="numpad-btn" onclick="pinPress('8')">8</button>
+      <button class="numpad-btn" onclick="pinPress('9')">9</button>
+      <button class="numpad-btn del" onclick="pinDel()">⌫</button>
+      <button class="numpad-btn" onclick="pinPress('0')">0</button>
+      <button class="numpad-btn" onclick="closePin()" style="font-size:0.85rem;color:var(--text-muted)">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TEACHER PANEL ========== -->
+<div class="teacher-panel" id="teacher-panel">
+  <div class="teacher-header">
+    <div class="teacher-title">🍎 Adult Settings</div>
+    <button class="panel-close-btn" onclick="closeTeacherPanel()">✕ Close</button>
+  </div>
+
+  <div class="teacher-section">
+    <h3>📌 Select Active Investigations</h3>
+    <p class="select-count" id="select-count">Choose up to 5 investigations to highlight. Leave all unchecked to show everything.</p>
+    <div class="inv-select-list" id="inv-select-list"></div>
+    <button class="save-btn" onclick="saveSelections()">💾 Save &amp; Apply to Student View</button>
+    <div class="saved-msg" id="saved-msg">✓ Saved!</div>
+  </div>
+
+  <div class="teacher-section curr-links">
+    <h3>📚 Curriculum Links (Year 3)</h3>
+    <p><strong>English:</strong> Creating texts (ACELY1669), Comprehension strategies (ACELY1670), Expressing opinions (ACELA1489)</p>
+    <p><strong>Mathematics:</strong> Number & Algebra (ACMNA055–057), Data representation (ACMSP067–069), Measurement (ACMMG061–063)</p>
+    <p><strong>Science:</strong> Living things (ACSSU044), Earth & space (ACSSU019), Science inquiry skills (ACSIS054–058)</p>
+    <p><strong>HASS:</strong> Places & spaces (ACHASSK066), Communities (ACHASSK067), Historical sources (ACHASSI052)</p>
+    <p><strong>The Arts:</strong> Drama (ACADRM028), Visual Arts (ACAVAM111), Music (ACAMUM080)</p>
+    <p><strong>Digital Technologies:</strong> Algorithms (ACTDIP011), Designing solutions (ACTDIP012), Digital systems (ACTDIK007)</p>
+  </div>
+
+  <div class="teacher-section">
+    <h3>📝 Progress Notes by Investigation</h3>
+    <div class="notes-list" id="notes-list"></div>
+    <button class="save-btn" onclick="saveNotes()" style="background:var(--blue)">💾 Save Notes</button>
+    <div class="saved-msg" id="notes-saved-msg">✓ Notes saved!</div>
+  </div>
+</div>
+
+<script>
+// ============ ALL INVESTIGATIONS DATA ============
+const ALL_INV = [
+  { id: 'eng1', title: 'Book Review Expert', section: 'English' },
+  { id: 'eng2', title: 'Invent a New Hero', section: 'English' },
+  { id: 'eng3', title: 'Class Newspaper Reporter', section: 'English' },
+  { id: 'mth1', title: 'Survey the Class', section: 'Mathematics' },
+  { id: 'mth2', title: 'Design a Maths Card Game', section: 'Mathematics' },
+  { id: 'mth3', title: 'Run Your Own Mini Shop', section: 'Mathematics' },
+  { id: 'sci1', title: 'Plant Life Cycle Poster', section: 'Science' },
+  { id: 'sci2', title: 'Design Your Own Experiment', section: 'Science' },
+  { id: 'sci3', title: 'Amazing Earth Facts Book', section: 'Science' },
+  { id: 'hss1', title: 'Map My Community', section: 'HASS' },
+  { id: 'hss2', title: 'A Story from the Past', section: 'HASS' },
+  { id: 'hss3', title: 'How Our School Makes Decisions', section: 'HASS' },
+  { id: 'art1', title: 'Write & Perform a Mini Play', section: 'The Arts' },
+  { id: 'art2', title: 'Inspired by a Famous Artist', section: 'The Arts' },
+  { id: 'art3', title: 'Compose a Rhythm Pattern', section: 'The Arts' },
+  { id: 'dig1', title: 'Write Instructions for a Robot', section: 'Digital Technologies' },
+  { id: 'dig2', title: 'Design a New App or Game', section: 'Digital Technologies' },
+  { id: 'dig3', title: 'Be a Digital Safety Expert', section: 'Digital Technologies' },
+  { id: 'meg1', title: 'Postcards from a Real Place', section: 'Mega Challenge' },
+  { id: 'meg2', title: 'Measure the Natural World', section: 'Mega Challenge' },
+  { id: 'meg3', title: 'My Expert Presentation', section: 'Mega Challenge' },
+];
+
+const CORRECT_PIN = '9458';
+
+// ============ CARD TOGGLE ============
+document.querySelectorAll('.inv-card').forEach(card => {
+  const tap = card.querySelector('.card-tap');
+  if (tap) tap.addEventListener('click', () => {
+    const wasOpen = card.classList.contains('open');
+    document.querySelectorAll('.inv-card.open').forEach(c => c.classList.remove('open'));
+    if (!wasOpen) card.classList.add('open');
+  });
+});
+
+// ============ TTS ============
+let ttsRate = 1;
+let utterance = null;
+
+function ttsReadAll() {
+  ttsStop();
+  const text = document.getElementById('main-content').innerText;
+  utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = ttsRate;
+  utterance.lang = 'en-AU';
+  speechSynthesis.speak(utterance);
+}
+function ttsStop() {
+  speechSynthesis.cancel();
+}
+function setSpeed(rate, key) {
+  ttsRate = rate;
+  document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('spd-' + key).classList.add('active');
+}
+
+// ============ PIN ============
+let pinInput = '';
+function openPin() {
+  pinInput = '';
+  updatePinDisplay();
+  document.getElementById('pin-error').textContent = '';
+  document.getElementById('pin-modal').classList.add('open');
+}
+function closePin() {
+  document.getElementById('pin-modal').classList.remove('open');
+  pinInput = '';
+}
+function pinPress(d) {
+  if (pinInput.length >= 4) return;
+  pinInput += d;
+  updatePinDisplay();
+  if (pinInput.length === 4) {
+    setTimeout(() => {
+      if (pinInput === CORRECT_PIN) {
+        closePin();
+        openTeacherPanel();
+      } else {
+        document.getElementById('pin-error').textContent = 'Incorrect PIN. Try again.';
+        pinInput = '';
+        updatePinDisplay();
+      }
+    }, 250);
+  }
+}
+function pinDel() {
+  pinInput = pinInput.slice(0, -1);
+  updatePinDisplay();
+}
+function updatePinDisplay() {
+  const dots = ['○','○','○','○'];
+  for (let i = 0; i < pinInput.length; i++) dots[i] = '●';
+  document.getElementById('pin-display').textContent = dots.join(' ');
+}
+
+// ============ TEACHER PANEL ============
+function openTeacherPanel() {
+  buildInvSelectList();
+  buildNotesList();
+  document.getElementById('teacher-panel').classList.add('open');
+}
+function closeTeacherPanel() {
+  document.getElementById('teacher-panel').classList.remove('open');
+}
+
+// Build investigation selector
+function buildInvSelectList() {
+  const saved = JSON.parse(localStorage.getItem('activeInv') || '[]');
+  const list = document.getElementById('inv-select-list');
+  list.innerHTML = '';
+  ALL_INV.forEach(inv => {
+    const item = document.createElement('label');
+    item.className = 'inv-select-item' + (saved.includes(inv.id) ? ' selected' : '');
+    item.innerHTML = `<input type="checkbox" value="${inv.id}" ${saved.includes(inv.id) ? 'checked' : ''}>
+      <span>${inv.section} — ${inv.title}</span>`;
+    item.querySelector('input').addEventListener('change', updateSelectCount);
+    item.addEventListener('click', () => {
+      setTimeout(() => item.classList.toggle('selected', item.querySelector('input').checked), 0);
+    });
+    list.appendChild(item);
+  });
+  updateSelectCount();
+}
+
+function updateSelectCount() {
+  const checked = document.querySelectorAll('#inv-select-list input:checked').length;
+  document.getElementById('select-count').textContent =
+    `Currently selected: ${checked} / 5 — leave all unchecked to show everything.`;
+}
+
+function saveSelections() {
+  const checked = [...document.querySelectorAll('#inv-select-list input:checked')].map(i => i.value);
+  localStorage.setItem('activeInv', JSON.stringify(checked));
+  applySelections(checked);
+  const msg = document.getElementById('saved-msg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+
+function applySelections(active) {
+  if (!active || active.length === 0) {
+    document.querySelectorAll('.inv-card').forEach(c => c.classList.remove('hidden-inv'));
+    document.querySelectorAll('.section-wrapper').forEach(s => s.classList.remove('all-hidden'));
+    return;
+  }
+  document.querySelectorAll('.inv-card').forEach(card => {
+    const id = card.dataset.id;
+    card.classList.toggle('hidden-inv', !active.includes(id));
+  });
+  // Hide empty sections
+  document.querySelectorAll('.section-wrapper').forEach(sec => {
+    const visible = sec.querySelectorAll('.inv-card:not(.hidden-inv)').length;
+    sec.classList.toggle('all-hidden', visible === 0);
+  });
+}
+
+// Build notes list
+function buildNotesList() {
+  const saved = JSON.parse(localStorage.getItem('invNotes') || '{}');
+  const list = document.getElementById('notes-list');
+  list.innerHTML = '';
+  ALL_INV.forEach(inv => {
+    const item = document.createElement('div');
+    item.className = 'note-item';
+    item.innerHTML = `<label>${inv.section} — ${inv.title}</label>
+      <textarea id="note-${inv.id}" placeholder="Add notes…">${saved[inv.id] || ''}</textarea>`;
+    list.appendChild(item);
+  });
+}
+
+function saveNotes() {
+  const notes = {};
+  ALL_INV.forEach(inv => {
+    const ta = document.getElementById('note-' + inv.id);
+    if (ta && ta.value) notes[inv.id] = ta.value;
+  });
+  localStorage.setItem('invNotes', JSON.stringify(notes));
+  const msg = document.getElementById('notes-saved-msg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+
+// ============ DOWNLOAD SUMMARY ============
+function downloadSummary(title, btn) {
+  const card = btn.closest('.inv-card');
+  const steps = [...card.querySelectorAll('.steps-list li')].map((li, i) => `Step ${i+1}: ${li.innerText.replace(/^\d+/, '').trim()}`).join('\n');
+  const text = `🌟 Extension Investigation Station\n\nInvestigation: ${title}\n\n${steps}\n\n--- Year 3 Extension Activity ---`;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = title.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '-steps.txt';
+  a.click();
+}
+
+// ============ INIT ============
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = JSON.parse(localStorage.getItem('activeInv') || '[]');
+  applySelections(saved);
+});
+</script>
+</body>
+</html>
