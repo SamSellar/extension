@@ -122,21 +122,6 @@
     align-items: center;
     gap: 6px;
   }
-  .tts-btn {
-    background: var(--blue);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .tts-btn:hover { background: var(--blue-dark); }
-  .tts-btn.stop { background: var(--red); }
-  .tts-btn.stop:hover { background: var(--red-dark); }
   .speed-group {
     display: flex;
     gap: 4px;
@@ -154,6 +139,33 @@
     transition: all 0.2s;
   }
   .speed-btn.active, .speed-btn:hover { background: var(--blue); color: white; border-color: var(--blue); }
+
+  /* === PER-CARD TTS === */
+  .card-tts-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .card-read-btn {
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+  .card-read-btn:hover { background: var(--blue-dark); }
+  .card-read-btn.reading { background: var(--red); }
+  .card-read-btn.reading:hover { background: var(--red-dark); }
 
   /* === MAIN CONTENT === */
   .main { max-width: 960px; margin: 0 auto; padding: 28px 16px 0; }
@@ -562,14 +574,13 @@
 
 <!-- TTS BAR -->
 <div class="tts-bar">
-  <span class="tts-label">🔊 Read aloud:</span>
-  <button class="tts-btn" onclick="ttsReadAll()">▶ Read everything</button>
-  <button class="tts-btn stop" onclick="ttsStop()">⏹ Stop</button>
+  <span class="tts-label">🔊 Reading speed:</span>
   <div class="speed-group">
     <button class="speed-btn" id="spd-slow" onclick="setSpeed(0.7, 'slow')">Slow</button>
     <button class="speed-btn active" id="spd-normal" onclick="setSpeed(1, 'normal')">Normal</button>
     <button class="speed-btn" id="spd-fast" onclick="setSpeed(1.4, 'fast')">Fast</button>
   </div>
+  <span style="font-size:0.78rem;color:var(--text-muted);font-weight:600;">— tap 🔊 on any card to hear it read aloud</span>
 </div>
 
 <!-- MAIN -->
@@ -1243,23 +1254,50 @@ document.querySelectorAll('.inv-card').forEach(card => {
 
 // ============ TTS ============
 let ttsRate = 1;
-let utterance = null;
+let currentReadBtn = null;
 
-function ttsReadAll() {
-  ttsStop();
-  const text = document.getElementById('main-content').innerText;
-  utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = ttsRate;
-  utterance.lang = 'en-AU';
-  speechSynthesis.speak(utterance);
-}
-function ttsStop() {
-  speechSynthesis.cancel();
-}
 function setSpeed(rate, key) {
   ttsRate = rate;
   document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('spd-' + key).classList.add('active');
+}
+
+function ttsStop() {
+  speechSynthesis.cancel();
+  if (currentReadBtn) {
+    currentReadBtn.innerHTML = '🔊 Read aloud';
+    currentReadBtn.classList.remove('reading');
+    currentReadBtn = null;
+  }
+}
+
+function ttsReadCard(btn) {
+  // If already reading this card, stop
+  if (currentReadBtn === btn) { ttsStop(); return; }
+  // Stop any current reading
+  ttsStop();
+  const panel = btn.closest('.steps-panel');
+  const title = panel.closest('.inv-card').querySelector('.card-title').innerText;
+  const desc = panel.closest('.inv-card').querySelector('.card-desc').innerText;
+  const steps = [...panel.querySelectorAll('.steps-list li')].map((li, i) => `Step ${i+1}. ${li.innerText.replace(/^\d+/, '').trim()}`).join('. ');
+  const text = `${title}. ${desc}. Here are your steps. ${steps}`;
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = ttsRate;
+  utt.lang = 'en-AU';
+  utt.onend = () => {
+    btn.innerHTML = '🔊 Read aloud';
+    btn.classList.remove('reading');
+    currentReadBtn = null;
+  };
+  utt.onerror = () => {
+    btn.innerHTML = '🔊 Read aloud';
+    btn.classList.remove('reading');
+    currentReadBtn = null;
+  };
+  btn.innerHTML = '⏹ Stop reading';
+  btn.classList.add('reading');
+  currentReadBtn = btn;
+  speechSynthesis.speak(utt);
 }
 
 // ============ PIN ============
@@ -1399,6 +1437,18 @@ function downloadSummary(title, btn) {
   a.download = title.replace(/[^a-z0-9]/gi, '-').toLowerCase() + '-steps.txt';
   a.click();
 }
+
+// ============ INJECT READ ALOUD BUTTONS ============
+document.querySelectorAll('.steps-panel').forEach(panel => {
+  const ttsRow = document.createElement('div');
+  ttsRow.className = 'card-tts-row';
+  const btn = document.createElement('button');
+  btn.className = 'card-read-btn';
+  btn.innerHTML = '🔊 Read aloud';
+  btn.addEventListener('click', (e) => { e.stopPropagation(); ttsReadCard(btn); });
+  ttsRow.appendChild(btn);
+  panel.insertBefore(ttsRow, panel.querySelector('.download-btn'));
+});
 
 // ============ INIT ============
 window.addEventListener('DOMContentLoaded', () => {
